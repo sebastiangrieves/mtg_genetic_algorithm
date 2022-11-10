@@ -156,6 +156,7 @@ if __name__ == '__main__':
     channel.queue_declare(queue='games')
     channel.queue_declare(queue='fitness_queue')
 
+    os.makedirs('Decks/')
     with open('standard_card_list.json') as f:
         data = json.load(f)
     while True:
