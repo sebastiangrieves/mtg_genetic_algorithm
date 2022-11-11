@@ -80,7 +80,7 @@ def crossover(father, mother):
     # make this return a list of 2 dictionaries
     return child_1, child_2
 
-
+# useless remove
 def add_card_to_deck(deck, output_deck):
     for card in deck:
         output_deck.append(card)
@@ -125,6 +125,10 @@ def save_deck(deck, generation=0):
     else:
         try:
             os.makedirs(f'Decks/gen{generation}/')
+            filename = f'Decks/gen{generation}/' + deck['name'] + '.json'
+            file = open(filename, 'w')
+            file.write(json.dumps(deck))
+            file.close()
         except:
             filename = f'Decks/gen{generation}/' + deck['name'] + '.json'
             file = open(filename, 'w')

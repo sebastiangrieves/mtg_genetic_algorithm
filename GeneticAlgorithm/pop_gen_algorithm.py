@@ -9,6 +9,7 @@ import random as Rand
 import deck
 from RecieveContainer import receive_and_play
 import uuid
+import shutil
 
 
 # create an initial population of n decks
@@ -35,13 +36,16 @@ def fitness_for_gen(generation):
 
 
 # mating pool for decks
+# returns amount of decks within fitness array(if 48 initial returns 48 new decks
 def mating_pool(fitness_array, generation):
     # choose 24 most fit
-    length_of_array = len(fitness_array)//2
+    length_of_array = len(fitness_array)
     newlist = sorted(fitness_array, key=lambda k: k['games_won'])
-    most_twentyfour = newlist[length_of_array:]
-    children = []
-    for i in range (1, length_of_array//4 + 1):
+    most_twentyfour = fitness_array
+    saved_decks = 1
+    child_names = []
+    for i in range(1, length_of_array//4 + 1):
+        children = []
         mother = most_twentyfour.pop(Rand.randint(1, len(most_twentyfour)-1))
         father = most_twentyfour.pop(Rand.randint(1, len(most_twentyfour)-1))
 
@@ -49,9 +53,12 @@ def mating_pool(fitness_array, generation):
         father_cards = deck.open_deck_file(father['name'], generation)
 
         children += deck.crossover(mother_cards["cards"], father_cards["cards"])
+
         deck.save_deck(father_cards, generation + 1)
         deck.save_deck(mother_cards, generation + 1)
-        child_names = []
+
+        child_names.append(father['name'])
+        child_names.append(mother['name'])
         for child in children:
             added_deck = {'name': str(uuid.uuid4()), 'color': '', 'cards': child}
             deck.save_deck(added_deck, generation+1)
@@ -60,8 +67,16 @@ def mating_pool(fitness_array, generation):
 
 
 if __name__ == '__main__':
+    # initial population has to be a multiple of 8, as we divide by 2 then 4 in mating pool
+    # removes Decks and all decks before starting new attempt
+    try:
+        shutil.rmtree('/Users/sebastiangrieves/PycharmProjects/rabbitmq/GeneticAlgorithm/Decks')
+    except:
+        print()
     initial_population(48)
     for i in range(1, 10):
         mating_pool(fitness_for_gen(i), i)
+
+
 #   for results in fitness_array:
 #       print(results)
