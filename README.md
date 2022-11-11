@@ -16,3 +16,4 @@ fitness_anylazer takes games from the fitness queue and determines if they will 
 Whiteboard sketch is a good visual overview of whats going on.
 
 pop_gen_algorithm.py is an implimantion of a more traditional GA
+Gsbsbvdvd
