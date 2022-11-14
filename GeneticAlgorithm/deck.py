@@ -8,11 +8,11 @@ import pika
 import os
 
 
-def deck_list_color(data, color_1, color_2 = ''):
+def deck_list_color(data, color_1, color_2=''):
     color_list = []
     for card in data:
         color_identity = card['color_identity']
-        if color_identity == [color_1] or color_identity == [color_1, color_2]:
+        if color_identity == [color_1] or color_identity == [color_1, color_2] or color_identity == [color_2]:
             if 'Land' not in card['type_line'] and 'A-' not in card['name']:
                 color_list.append(card)
 
@@ -79,6 +79,7 @@ def crossover(father, mother):
 
     # make this return a list of 2 dictionaries
     return child_1, child_2
+
 
 # useless remove
 def add_card_to_deck(deck, output_deck):
@@ -153,6 +154,30 @@ def open_deck_file(name, generation):
         deck_1 = json.load(f)
     return deck_1
 
+
+def mutation(deck):
+    mutation_coeffecient = 0.05
+    colors = deck_color(deck)
+    colors = ['B', '']
+    cards = deck['cards']
+    for card in cards:
+        rand_value = rand.randint(0, 100)/100
+        if rand_value < mutation_coeffecient:
+            for idx, item in enumerate(cards):
+                if item == card:
+                    new_card = random_card((deck_list_color(data, colors[0], colors[1])))
+                    cards[idx] = new_card
+                    print(new_card)
+                    break
+
+    return deck
+
+
+def deck_color(deck):
+    color = []
+    return color
+
+
 if __name__ == '__main__':
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host='localhost'))
@@ -163,6 +188,7 @@ if __name__ == '__main__':
     os.makedirs('Decks/')
     with open('standard_card_list.json') as f:
         data = json.load(f)
+    mutation(deck_create(data, 'B'))
     while True:
         deck_1 = deck_create(data, 'B')
         save_deck(deck_1)
