@@ -14,3 +14,5 @@ deck.py is the code with everything relating for the deck, and right now creates
 fitness_anylazer takes games from the fitness queue and determines if they will remain in the deck pool, if so they are bred with all decks in the deck pool.
 
 Whiteboard sketch is a good visual overview of whats going on.
+
+pop_gen_algorithm.py is an implimantion of a more traditional GA
