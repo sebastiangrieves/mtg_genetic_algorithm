@@ -4,6 +4,7 @@
 
 import json
 import os
+import random
 import random as Rand
 
 import deck
@@ -17,8 +18,9 @@ def initial_population(pop_size):
     with open('standard_card_list.json') as f:
         data = json.load(f)
     n = pop_size
+    colors = ['B', 'W', 'R', 'G','U' ]
     for i in range(n+1):
-        deck_intial = deck.deck_create(data, 'B')
+        deck_intial = deck.deck_create(data, colors[random.randrange(0, len(colors))])
         deck.save_deck(deck_intial, 1)
 
 
@@ -38,6 +40,8 @@ def fitness_for_gen(generation):
 # mating pool for decks
 # returns amount of decks within fitness array(if 48 initial returns 48 new decks
 def mating_pool(fitness_array, generation):
+    with open('standard_card_list.json') as f:
+        data = json.load(f)
     # choose 24 most fit
     length_of_array = len(fitness_array)
     newlist = sorted(fitness_array, key=lambda k: k['games_won'])
@@ -60,9 +64,10 @@ def mating_pool(fitness_array, generation):
         child_names.append(father['name'])
         child_names.append(mother['name'])
         for child in children:
-            added_deck = {'name': str(uuid.uuid4()), 'color': '', 'cards': child}
-            deck.save_deck(added_deck, generation+1)
+            added_deck = {'name': str(uuid.uuid4()), 'color': deck.deck_color(child), 'cards': child}
             child_names.append(added_deck['name'])
+            added_deck = deck.mutation(added_deck, data)
+            deck.save_deck(added_deck, generation+1)
     return child_names
 
 

@@ -38,7 +38,7 @@ def search_lands(data, color):
 
 def random_card(data):
     x = len(data)
-    card_index = rand.randint(1, x - 1)
+    card_index = rand.randrange(1, x)
     card = data[card_index]
     minimal_card = [card["name"], card['set']]
     return minimal_card
@@ -137,16 +137,16 @@ def save_deck(deck, generation=0):
             file.close()
 
 
-def send_message(deck_1):
-    message = {'deck_1': deck_1}
-    message_string = json.dumps(message)
-    channel.basic_publish(
-        exchange='',
-        routing_key='games',
-        body=message_string,
-        properties=pika.BasicProperties(
-            delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
-        ))
+#def send_message(deck_1):
+#    message = {'deck_1': deck_1}
+#    message_string = json.dumps(message)
+#    channel.basic_publish(
+#        exchange='',
+#        routing_key='games',
+#        body=message_string,
+#        properties=pika.BasicProperties(
+#            delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
+#        ))
 
 
 def open_deck_file(name, generation):
@@ -155,41 +155,45 @@ def open_deck_file(name, generation):
     return deck_1
 
 
-def mutation(deck):
+def mutation(deck, data):
     mutation_coeffecient = 0.05
-    colors = deck_color(deck)
-    colors = ['B', '']
+    colors = deck['color']
     cards = deck['cards']
-    for card in cards:
-        rand_value = rand.randint(0, 100)/100
-        if rand_value < mutation_coeffecient:
-            for idx, item in enumerate(cards):
-                if item == card:
-                    new_card = random_card((deck_list_color(data, colors[0], colors[1])))
-                    cards[idx] = new_card
-                    print(new_card)
-                    break
-
+    new_cards = deck_list_color(data, colors[0][0], colors[1][0] if len(colors) == 2 else '')
+    for i in range (1, rand.randint(0, int(mutation_coeffecient*100))):
+        cards[rand.randrange(0, len(cards))] = random_card(new_cards)
+        print(i)
+    deck['cards'] = cards
     return deck
 
 
-def deck_color(deck):
-    color = []
-    return color
+def deck_color(cards):
+    colors = []
+    with open('standard_card_list.json') as f:
+        data = json.load(f)
+    for card in cards:
+        card_name = card[0]
+        card = search_card(data, card_name)
+        if not colors.__contains__(card['colors']):
+            if card['colors']:
+                colors.append(card['colors'])
+
+    return colors
 
 
 if __name__ == '__main__':
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost'))
-    channel = connection.channel()
-    channel.queue_declare(queue='games')
-    channel.queue_declare(queue='fitness_queue')
-
-    os.makedirs('Decks/')
+#    connection = pika.BlockingConnection(
+#        pika.ConnectionParameters(host='localhost'))
+#    channel = connection.channel()
+#    channel.queue_declare(queue='games')
+#    channel.queue_declare(queue='fitness_queue')
+#
+#    os.makedirs('Decks/')
     with open('standard_card_list.json') as f:
         data = json.load(f)
-    mutation(deck_create(data, 'B'))
-    while True:
-        deck_1 = deck_create(data, 'B')
-        save_deck(deck_1)
-        send_message(deck_1)
+#    mutation(deck_create(data, 'B'))
+#    while True:
+#        deck_1 = deck_create(data, 'B')
+#        save_deck(deck_1)
+#        send_message(deck_1)
+
