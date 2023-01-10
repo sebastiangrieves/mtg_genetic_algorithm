@@ -1,7 +1,11 @@
 import pika, json, os, random as rand
 
 
+#assign ea h container in here to one within the vm
+
 def play_games(deck):
+    # assign each container in here to one within the vm
+    # set an environmental variable that increments 8000,8001...
     games_won = 0
     # in the sim you can put in amount of games you would just ping a message with the amount of games here it randrange
     # deck1

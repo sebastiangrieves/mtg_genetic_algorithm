@@ -104,7 +104,6 @@ def deck_to_dck(deck, name):
             card = card_dictionary[key]
             f.write('{} {}\n'.format(card[0], card[1]))
         f.write(f'[Sideboard]\n\n[Planes]\n\n[Schemes]\n\n[Conspiracy]\n\n[Dungeon]\n')
-    shutil.copyfile('Decks/deck.txt', f'/Users/sebastiangrieves/Library/Application Support/Forge/decks/constructed/{name}.dck')
 
 
 def front_side_card(card):
