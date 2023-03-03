@@ -6,7 +6,7 @@ import json
 import os
 import random
 import random as Rand
-
+import server_comm
 import deck
 from RecieveContainer import receive_and_play
 import uuid
@@ -30,7 +30,7 @@ def fitness_for_gen(generation):
     for deck in os.listdir(f'Decks/gen{generation}'):
         deck_name = deck
         deck_data = json.load(open(f'Decks/gen{generation}/{deck_name}'))
-        deck_fitness = receive_and_play.play_games(deck_data)
+        deck_fitness = receive_and_play.play_games(deck_data, 8000)
         fitness_array_per_deck.append(deck_fitness)
     # contain a tuple with deck name and fitness score
 

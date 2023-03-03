@@ -136,16 +136,16 @@ def save_deck(deck, generation=0):
             file.close()
 
 
-#def send_message(deck_1):
-#    message = {'deck_1': deck_1}
-#    message_string = json.dumps(message)
-#    channel.basic_publish(
-#        exchange='',
-#        routing_key='games',
-#        body=message_string,
-#        properties=pika.BasicProperties(
-#            delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
-#        ))
+def send_message(deck_1):
+    message = {'deck_1': deck_1}
+    message_string = json.dumps(message)
+    channel.basic_publish(
+        exchange='',
+        routing_key='games',
+        body=message_string,
+        properties=pika.BasicProperties(
+            delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
+        ))
 
 
 def open_deck_file(name, generation):
@@ -181,18 +181,22 @@ def deck_color(cards):
 
 
 if __name__ == '__main__':
-#    connection = pika.BlockingConnection(
-#        pika.ConnectionParameters(host='localhost'))
-#    channel = connection.channel()
-#    channel.queue_declare(queue='games')
-#    channel.queue_declare(queue='fitness_queue')
-#
-#    os.makedirs('Decks/')
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue='games')
+    channel.queue_declare(queue='fitness_queue')
+    channel.queue_declare(queue='log_queue')
+
+    #os.makedirs('Decks/')
     with open('standard_card_list.json') as f:
         data = json.load(f)
 #    mutation(deck_create(data, 'B'))
-#    while True:
-#        deck_1 = deck_create(data, 'B')
-#        save_deck(deck_1)
-#        send_message(deck_1)
+    for i in range(30):
+        deck_1 = deck_create(data, 'B')
+        save_deck(deck_1)
+        send_message(deck_1)
+
+        #text color black
+        #
 
